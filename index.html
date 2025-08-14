@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- all the assets -->
-  <a-assets>
-    <a-asset-item id="env-glb" src="mdl/start.glb"></a-asset-item>
-  </a-assets>
+
   <a-scene networked-scene="room: gallery; debug: true; audio: true">
+    <!-- all the assets -->
+    <a-assets>
+      <a-asset-item id="env-glb" src="mdl/start.glb"></a-asset-item>
+    </a-assets>
+    
     <!-- Camera and controls -->
     <a-entity id="cameraRig" networked="template:#avatar-template;attachTemplateToLocal:true" position="0 1.6 4">
       <a-entity camera look-controls wasd-controls></a-entity>
