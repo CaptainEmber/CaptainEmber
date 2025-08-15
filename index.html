@@ -21,7 +21,8 @@
   <a-scene>
     <!-- all the assets -->
     <a-assets>
-      <a-asset-item id="env-glb" src="mdl/start_002.glb"></a-asset-item>
+      <a-asset-item id="env-glb" src="mdl/start_003.glb"></a-asset-item>
+      <img id="sky" src="img/clouds.jpg">
     </a-assets>
 
     <!-- Camera and controls -->
@@ -31,7 +32,8 @@
     
     <!-- Environment GLB: start.glb -->
     <a-entity gltf-model="#env-glb" position="0 0 0" scale="1 1 1"></a-entity>
-
+    <!-- Sky -->
+    <a-sky src="#sky" src="#sky"></a-sky>
     <!-- Navigation Link Example -->
     <a-link href="room2.html" title="Next Room" position="2 1 -3" color="#FF926B"></a-link>
 
