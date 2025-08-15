@@ -5,22 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>REM Ember</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/easyrtc@2.1.2/api/easyrtc.js"></script>
-  <script src="https://unpkg.com/networked-aframe@^0.14.0/dist/networked-aframe.min.js"></script>
+  <!-- NAF scripts removed -->
   <script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.min.js"></script>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Force HTTPS -->
+  <script>
+  if (window.location.protocol !== 'https:') {
+    window.location.replace('https://' + window.location.hostname + window.location.pathname + window.location.search + window.location.hash);
+  }
+  </script>
 </head>
 <body>
 
-  <a-scene networked-scene="room: gallery; debug: true; audio: true">
+  <a-scene>
     <!-- all the assets -->
     <a-assets>
       <a-asset-item id="env-glb" src="mdl/start.glb"></a-asset-item>
     </a-assets>
-    
+
     <!-- Camera and controls -->
-    <a-entity id="cameraRig" networked="template:#avatar-template;attachTemplateToLocal:true" position="0 1.6 4">
+  <a-entity id="cameraRig" position="0 1.6 4">
       <a-entity camera look-controls wasd-controls></a-entity>
     </a-entity>
     
@@ -40,7 +45,7 @@
         <a-sphere id="left-pupil" radius="0.02" position="-0.08 0.18 0.27" color="#222"></a-sphere>
         <a-sphere id="right-pupil" radius="0.02" position="0.08 0.18 0.27" color="#222"></a-sphere>
         <a-entity id="mouth" geometry="primitive: torus; radius: 0.08; tube: 0.015; arc: 180" rotation="90 0 0" position="0 0.05 0.23" material="color: #f33"></a-entity>
-        <a-entity id="audio" networked-audio-source position="0 0.25 0"></a-entity>
+  <!-- <a-entity id="audio" networked-audio-source position="0 0.25 0"></a-entity> -->
       </a-entity>
     </template>
     <script>
