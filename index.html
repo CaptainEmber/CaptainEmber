@@ -28,6 +28,14 @@
       <a-asset-item id="env-glb" src="mdl/start_004.glb"></a-asset-item>
       <a-asset-item id="dolphin" src="mdl/dolphinleap.glb"></a-asset-item>
       <img id="sky" src="img/clouds.jpg">
+      <a-cubemap id="pan">
+        <img src="img/pan-orama/px.jpg">
+        <img src="img/pan-orama/nx.jpg">
+        <img src="img/pan-orama/py.jpg">
+        <img src="img/pan-orama/ny.jpg">
+        <img src="img/pan-orama/pz.jpg">
+        <img src="img/pan-orama/nz.jpg">
+      </a-cubemap>
     </a-assets>
 
     <!-- Camera and controls -->
@@ -37,7 +45,7 @@
     
     <!-- Environment GLB: start.glb -->
     <a-entity gltf-model="#env-glb" position="0 0 0" scale="1 1 1"></a-entity>
-    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" animation-mixer="clip: leap"></a-entity>
+    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" material="envMap:#pan; metalness:1.0; roughness:0.0" animation-mixer="clip: leap"></a-entity>
 
     <!-- Sky -->
     <a-sky src="#sky" src="#sky"></a-sky>
@@ -58,7 +66,7 @@
         <!-- <a-entity id="audio" networked-audio-source position="0 0.25 0"></a-entity> -->
       </a-entity>
     </template>
-    
+
     <script>
       // Assign a random color to the avatar's head on creation
       AFRAME.registerComponent('random-avatar-color', {
