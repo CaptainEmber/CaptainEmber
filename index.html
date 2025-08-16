@@ -54,7 +54,15 @@
     
     <!-- Environment GLB: start.glb -->
     <a-entity gltf-model="#env-glb" position="0 0 0" scale="1 1 1"></a-entity>
-    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" material="envMap:#pan; metalness:1.0; roughness:0.0" animation-mixer="clip: leap"></a-entity>
+    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" cube-env-map="#pan; extension: jpg; reflectivity: 0.9;" animation-mixer="clip: leap"></a-entity>
+
+    <!--
+     <a-entity 
+        gltf-model="#toy"
+        cube-env-map="path: https://mkwy.fr/assets/cube-env/; extension: jpg; reflectivity: 0.9;" 
+        play-all-model-animations >
+     </a-entity>
+     -->
 
     <!-- Sky -->
     <a-sky src="#sky" src="#sky"></a-sky>
