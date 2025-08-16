@@ -9,6 +9,7 @@
   <script src="/easyrtc/easyrtc.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.0/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/aframe-web-portals@1.0.1/dist/aframe-web-portals.umd.js"></script>
  
 
   <link rel="stylesheet" href="style.css">
@@ -51,7 +52,10 @@
     <a-sky src="#sky" src="#sky"></a-sky>
 
     <!-- Navigation Link Example -->
-    <a-link href="room2.html" title="Next Room" position="2 3 -3" color="#FF926B"></a-link>
+      <a-entity
+        position="-3 0 -6"
+        web-portal="url:https://aframe.io; text:Aframe;"
+      ></a-entity>
 
     <!-- Avatar Template with Goofy Shape and Positional Audio -->
     <template id="avatar-template">
