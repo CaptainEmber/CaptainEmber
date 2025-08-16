@@ -9,9 +9,19 @@
   <script src="/easyrtc/easyrtc.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.0/dist/aframe-extras.min.js"></script>
- 
+  <script src="https://unpkg.com/aframe-audio-analyser@1.0.0/dist/aframe-audio-analyser.umd.js"></script>
   <link rel="stylesheet" href="style.css">
 
+  <script>
+      AFRAME.scenes[0].addEventListener('loaded', function () {
+      var sceneEl = this;
+      var renderer = sceneEl.renderer;
+      var cubeMap = sceneEl.querySelector('#pan').__threeObj;
+      if (renderer && cubeMap) {
+        sceneEl.object3D.environment = cubeMap;
+      }
+   });
+  </script>
   <!-- Force HTTPS -->
   <script>
   if (window.location.protocol !== 'https:') {
@@ -49,6 +59,8 @@
     <!-- Sky -->
     <a-sky src="#sky" src="#sky"></a-sky>
 
+    <!-- Link to audio analyzer -->
+    <a-entity audioanalyser="src: #song;" component-that-does-stuff-with-audioanalyser-data></a-entity>
 
     <!-- Avatar Template with Goofy Shape and Positional Audio -->
     <template id="avatar-template">
@@ -79,16 +91,6 @@
         if (cameraRig) cameraRig.setAttribute('random-avatar-color', '');
       });
     </script>
-    <script>
-      AFRAME.scenes[0].addEventListener('loaded', function () {
-      var sceneEl = this;
-      var renderer = sceneEl.renderer;
-      var cubeMap = sceneEl.querySelector('#pan').__threeObj;
-      if (renderer && cubeMap) {
-        sceneEl.object3D.environment = cubeMap;
-      }
-   });
-  </script>
   </a-scene>
 </body>
 </html>
