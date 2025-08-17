@@ -31,7 +31,7 @@
 </head>
 <body>
 
-  <a-scene>
+  <a-scene reflection="directionalLight:a-light#dirlight;">
     <!-- all the assets -->
     <a-assets>
       <a-asset-item id="env-glb" src="mdl/start_004.glb"></a-asset-item>
@@ -45,31 +45,24 @@
         <img src="img/panorama/pz.jpg">
         <img src="img/panorama/nz.jpg">
       </a-cubemap>
+      <audio id="song" src="sfx/lovestep.mp3" autoplay loop></audio>
     </a-assets>
 
     <!-- Camera and controls -->
     <a-entity id="cameraRig" position="0 1.6 4" dynamic-body>
-      <a-entity camera look-controls wasd-controls></a-entity>
+      <a-entity camera look-controls wasd-controls>
+        <a-cursor></a-cursor>
+      </a-entity>
     </a-entity>
     
     <!-- Environment GLB: start.glb -->
     <a-entity gltf-model="#env-glb" position="0 0 0" scale="1 1 1"></a-entity>
-    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" animation-mixer="clip: leap"></a-entity>
-
-    <!--
-     <a-entity 
-        gltf-model="#toy"
-        cube-env-map="path: https://mkwy.fr/assets/cube-env/; extension: jpg; reflectivity: 0.9;" 
-        play-all-model-animations >
-     </a-entity>
-     -->
+    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" animation-mixer="clip: leap" scale-on-mouseenter></a-entity>
 
     <!-- Sky -->
     <a-sky src="#sky" src="#sky"></a-sky>
-
-    <!-- Link to audio analyzer -->
-    <a-entity audioanalyser="src: #song;" component-that-does-stuff-with-audioanalyser-data></a-entity>
-
+    <a-light id="dirlight" intensity="1" light="castShadow:true;type:directional" position="1 1 1"></a-light>
+    
     <!-- Avatar Template with Goofy Shape and Positional Audio -->
     <template id="avatar-template">
       <a-entity>
@@ -86,6 +79,17 @@
 
     <!-- Add this inside your <a-scene> -->
     <a-link id="roomLink" static-body href="room2.html" position="0 1 -3" title="Go to Room 2"></a-link>
+
+    <!-- Audio analyzer -->
+    <a-entity id="audio-analyzer" audioanalyser="src: #song; smoothingTimeConstant: 0.9" position="0 0 0"></a-entity>
+
+    <!-- Audio reactive object -->
+    <a-entity
+      geometry="primitive: icosahedron"
+      material="color: #ff0000; metalness: 0.8; roughness: 0.2"
+      position="0 1 0"
+      audio-reactive="analyzerEl: #audio-analyzer; minHeight: 0; maxHeight: 3; minScale: 0.5; maxScale: 2">
+    </a-entity>
 
   </a-scene>
 
@@ -139,8 +143,60 @@
             }
           });
         }
+
+        // Scale on mouse enter
+        AFRAME.registerComponent('scale-on-mouseenter', {
+          schema: {
+            to: {default: '2.5 2.5 2.5', type: 'vec3'}
+          },
+
+          init: function () {
+            var data = this.data;
+            var el = this.el;
+            this.el.addEventListener('mouseenter', function () {
+              el.object3D.scale.copy(data.to);
+            });
+          }
+        });
+
+        // Add audio-reactive component
+        AFRAME.registerComponent('audio-reactive', {
+          schema: {
+            analyzerEl: {type: 'selector', default: '[audioanalyser]'},
+            minHeight: {default: 0},
+            maxHeight: {default: 2},
+            minScale: {default: 1},
+            maxScale: {default: 2}
+          },
+
+          tick: function () {
+            var analyzerEl = this.data.analyzerEl;
+            if (!analyzerEl || !analyzerEl.components.audioanalyser) { return; }
+
+            var analyzerComponent = analyzerEl.components.audioanalyser;
+            var volume = analyzerComponent.volume;
+            var frequencies = analyzerComponent.frequencies;
+            
+            // Get bass (first quarter of frequencies)
+            var bass = 0;
+            var length = Math.floor(frequencies.length / 4);
+            for (var i = 0; i < length; i++) {
+              bass += frequencies[i];
+            }
+            bass = bass / length / 255;
+
+            // Apply transformations
+            var height = this.data.minHeight + (volume * (this.data.maxHeight - this.data.minHeight));
+            var scale = this.data.minScale + (bass * (this.data.maxScale - this.data.minScale));
+            
+            this.el.object3D.position.y = height;
+            this.el.object3D.scale.set(scale, scale, scale);
+          }
+        });
+
       });
     });
+
   </script>
 </body>
 </html>
