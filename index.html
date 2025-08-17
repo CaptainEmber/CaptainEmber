@@ -6,7 +6,7 @@
   <title>REM Ember</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
-  <script src="/easyrtc/easyrtc.js"></script>
+  <!-- <script src="/easyrtc/easyrtc.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/randomcolor/randomColor.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.0/dist/aframe-extras.min.js"></script>
   <script src="https://unpkg.com/aframe-audio-analyser@1.0.0/dist/aframe-audio-analyser.umd.js"></script>
@@ -89,52 +89,58 @@
 
   </a-scene>
 
-      <script>
-      // Assign a random color to the avatar's head on creation
-      AFRAME.registerComponent('random-avatar-color', {
-        init: function () {
-          var color = window.randomColor ? window.randomColor() : '#39c';
-          var head = this.el.querySelector('#head');
-          if (head) head.setAttribute('color', color);
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Wait for A-Frame to be ready
+      var scene = document.querySelector('a-scene');
+      scene.addEventListener('loaded', function () {
+        // Set up environment cubemap
+        var renderer = scene.renderer;
+        var cubeMap = scene.querySelector('#pan').__threeObj;
+        if (renderer && cubeMap) {
+          scene.object3D.environment = cubeMap;
+        }
+
+        // Set up dolphin reflection
+        var dolphinEl = document.querySelector('[gltf-model="#dolphin"]');
+        if (dolphinEl) {
+          dolphinEl.addEventListener('model-loaded', function () {
+            var cubemap = scene.querySelector('#pan').__threeObj;
+            if (!cubemap) return;
+            dolphinEl.getObject3D('mesh').traverse(function (node) {
+              if (node.isMesh && node.material) {
+                node.material.envMap = cubemap;
+                node.material.envMapIntensity = 1.0;
+                node.material.metalness = 1.0;
+                node.material.roughness = 0.0;
+                node.material.needsUpdate = true;
+              }
+            });
+          });
+        }
+
+        // Random avatar color
+        AFRAME.registerComponent('random-avatar-color', {
+          init: function () {
+            var color = window.randomColor ? window.randomColor() : '#39c';
+            var head = this.el.querySelector('#head');
+            if (head) head.setAttribute('color', color);
+          }
+        });
+
+        // Set up avatar and collision
+        var cameraRig = document.querySelector('#cameraRig');
+        if (cameraRig) {
+          cameraRig.setAttribute('random-avatar-color', '');
+          cameraRig.addEventListener('collide', function (e) {
+            if (e.detail.body.el && e.detail.body.el.id === 'roomLink') {
+              var href = e.detail.body.el.getAttribute('href');
+              if (href) window.location.href = href;
+            }
+          });
         }
       });
-      // Attach to local avatar
-      document.addEventListener('DOMContentLoaded', function () {
-        var cameraRig = document.querySelector('#cameraRig');
-        if (cameraRig) cameraRig.setAttribute('random-avatar-color', '');
-      });
-
-      // Listen for collisions on the camera rig
-      document.querySelector('#cameraRig').addEventListener('collide', function (e) {
-      // Check if collided with the link
-      if (e.detail.body.el && e.detail.body.el.id === 'roomLink') {
-      // Get the href attribute from the link
-      var href = e.detail.body.el.getAttribute('href');
-      if (href) window.location.href = href;
-    }
-  });
-    </script>
-    <script>
-AFRAME.scenes[0].addEventListener('loaded', function () {
-  var dolphinEl = document.querySelector('[gltf-model="#dolphin"]');
-  if (!dolphinEl) return;
-  dolphinEl.addEventListener('model-loaded', function () {
-    // Get the cubemap texture from the a-cubemap asset
-    var cubemap = document.querySelector('#pan').__threeObj;
-    if (!cubemap) return;
-    // Traverse the dolphin mesh and set envMap on all mesh materials
-    dolphinEl.getObject3D('mesh').traverse(function (node) {
-      if (node.isMesh && node.material) {
-        node.material.envMap = cubemap;
-        node.material.envMapIntensity = 1.0;
-        node.material.metalness = 1.0;    // Make it shiny
-        node.material.roughness = 0.1;    // Lower roughness for more reflection
-        node.material.needsUpdate = true;
-      }
     });
-  });
-});
-</script>
-    
+  </script>
 </body>
 </html>
