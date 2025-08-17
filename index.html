@@ -48,13 +48,13 @@
     </a-assets>
 
     <!-- Camera and controls -->
-    <a-entity id="cameraRig" position="0 1.6 4">
+    <a-entity id="cameraRig" position="0 1.6 4" dynamic-body>
       <a-entity camera look-controls wasd-controls></a-entity>
     </a-entity>
     
     <!-- Environment GLB: start.glb -->
     <a-entity gltf-model="#env-glb" position="0 0 0" scale="1 1 1"></a-entity>
-    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" cube-env-map="#pan; extension: jpg; reflectivity: 0.9;" animation-mixer="clip: leap"></a-entity>
+    <a-entity gltf-model="#dolphin" position="0 0 0" scale="1 1 1" animation-mixer="clip: leap"></a-entity>
 
     <!--
      <a-entity 
@@ -84,7 +84,12 @@
       </a-entity>
     </template>
 
-    <script>
+    <!-- Add this inside your <a-scene> -->
+    <a-link id="roomLink" static-body href="room2.html" position="0 1 -3" title="Go to Room 2"></a-link>
+
+  </a-scene>
+
+      <script>
       // Assign a random color to the avatar's head on creation
       AFRAME.registerComponent('random-avatar-color', {
         init: function () {
@@ -98,7 +103,38 @@
         var cameraRig = document.querySelector('#cameraRig');
         if (cameraRig) cameraRig.setAttribute('random-avatar-color', '');
       });
+
+      // Listen for collisions on the camera rig
+      document.querySelector('#cameraRig').addEventListener('collide', function (e) {
+      // Check if collided with the link
+      if (e.detail.body.el && e.detail.body.el.id === 'roomLink') {
+      // Get the href attribute from the link
+      var href = e.detail.body.el.getAttribute('href');
+      if (href) window.location.href = href;
+    }
+  });
     </script>
-  </a-scene>
+    <script>
+AFRAME.scenes[0].addEventListener('loaded', function () {
+  var dolphinEl = document.querySelector('[gltf-model="#dolphin"]');
+  if (!dolphinEl) return;
+  dolphinEl.addEventListener('model-loaded', function () {
+    // Get the cubemap texture from the a-cubemap asset
+    var cubemap = document.querySelector('#pan').__threeObj;
+    if (!cubemap) return;
+    // Traverse the dolphin mesh and set envMap on all mesh materials
+    dolphinEl.getObject3D('mesh').traverse(function (node) {
+      if (node.isMesh && node.material) {
+        node.material.envMap = cubemap;
+        node.material.envMapIntensity = 1.0;
+        node.material.metalness = 1.0;    // Make it shiny
+        node.material.roughness = 0.1;    // Lower roughness for more reflection
+        node.material.needsUpdate = true;
+      }
+    });
+  });
+});
+</script>
+    
 </body>
 </html>
