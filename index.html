@@ -70,7 +70,7 @@
     <!-- Sky -->
     <a-sky src="#sky" src="#sky"></a-sky>
     <a-light id="dirlight" intensity="1" light="castShadow:true;type:directional" position="1 1 1"></a-light>
-    
+    <a-light type="probe" envMap="#pan"></a-light>
     <!-- Avatar Template with Goofy Shape and Positional Audio -->
     <template id="avatar-template">
       <a-entity>
@@ -86,7 +86,7 @@
     </template>
 
     <!-- Add this inside your <a-scene> -->
-    <a-link id="roomLink" static-body href="room2.html" position="0 1 -3" title="Go to Room 2"></a-link>
+56    <a-link href="room2.html" position="0 1 -3" title="Go to Room 2"></a-link>
 
     <!-- Audio analyzer -->
     <a-entity id="audio-analyzer" audioanalyser="src: #song; smoothingTimeConstant: 0.9" position="0 0 0"></a-entity>
@@ -144,12 +144,6 @@
         var cameraRig = document.querySelector('#cameraRig');
         if (cameraRig) {
           cameraRig.setAttribute('random-avatar-color', '');
-          cameraRig.addEventListener('collide', function (e) {
-            if (e.detail.body.el && e.detail.body.el.id === 'roomLink') {
-              var href = e.detail.body.el.getAttribute('href');
-              if (href) window.location.href = href;
-            }
-          });
         }
 
         // Scale on mouse enter
