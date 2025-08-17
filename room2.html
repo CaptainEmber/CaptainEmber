@@ -11,7 +11,15 @@
 <body>
   <a-scene networked-scene="room: gallery2; debug: true">
     <a-entity id="cameraRig" networked="template:#avatar-template;attachTemplateToLocal:true" position="0 1.6 4">
-      <a-entity camera look-controls wasd-controls></a-entity>
+      <a-entity camera look-controls wasd-controls>
+        <a-entity cursor="fuse: true; fuseTimeout: 1500"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: white; shader: flat"
+                  animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+                  animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
+        </a-entity>
+      </a-entity>
     </a-entity>
     <a-assets>
       <a-asset-item id="sample2-glb" src="public/sample2.glb"></a-asset-item>
