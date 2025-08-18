@@ -41,12 +41,7 @@
     <!-- Camera and controls -->
     <a-entity id="cameraRig" position="0 1.6 4" dynamic-body>
       <a-entity camera look-controls wasd-controls>
-        <a-entity cursor="fuse: false; fuseTimeout: 1500"
-          position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-          material="color: white; shader: flat"
-          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
-          animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
+        <a-entity cursor="rayOrigin: mouse">
         </a-entity>
       </a-entity>
     </a-entity>
