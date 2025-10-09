@@ -1,43 +1,24 @@
 const express = require('express');
-const http = require('http');
-const path = require('path');
-const socketIo = require('socket.io');
-const easyrtc = require('open-easyrtc');
-
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const NAF = require('networked-aframe');
 
-// Serve static files from root directory
-app.use(express.static(path.resolve(__dirname)));
+// Serve static files
+app.use(express.static(__dirname));
 
-// Initialize WebRTC
-const myIceServers = [
-  {"urls":"stun:stun1.l.google.com:19302"},
-  {"urls":"stun:stun2.l.google.com:19302"}
-];
-
-easyrtc.setOption("appIceServers", myIceServers);
-easyrtc.setOption("logLevel", "debug");
-easyrtc.setOption("demosEnable", false);
-
-// Set up WebRTC listeners
-easyrtc.events.on("easyrtcAuth", (socket, easyrtcid, msg, socketCallback, callback) => {
-    easyrtc.events.defaultListeners.easyrtcAuth(socket, easyrtcid, msg, socketCallback, (err, connectionObj) => {
-        callback(err, connectionObj);
-    });
+// HTTPS redirect middleware
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && !req.secure) {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
 });
 
-easyrtc.events.on("roomJoin", (connectionObj, roomName, roomParameter, callback) => {
-    easyrtc.events.defaultListeners.roomJoin(connectionObj, roomName, roomParameter, callback);
-});
-
-// Start EasyRTC server
-easyrtc.listen(app, server, null, (err, rtcRef) => {
-    console.log("EasyRTC server started");
-});
+// Initialize Networked A-Frame
+NAF.require('naf-server').listen(http, { path: '/' });
 
 const port = process.env.PORT || 8080;
-server.listen(port, () => {
+http.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
