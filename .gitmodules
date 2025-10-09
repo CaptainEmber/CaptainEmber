@@ -1,0 +1,3 @@
+[submodule "vtt/3Dvtt"]
+	path = vtt/3Dvtt
+	url = https://github.com/CaptainEmber/3Dvtt
