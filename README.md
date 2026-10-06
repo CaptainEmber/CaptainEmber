@@ -4,8 +4,4 @@
 - 💞️ looking to collaborate on interactive webXR experiences
 - 📫 Tawpshelf on Discord
 
-# XR in Bio!
-
-by Emmett Baber
-
 **[Send me an email!](mailto:emmettbaber@gmail.com)**
